@@ -10,7 +10,10 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "jest --coverage",
-    "sonar": "sonar-scanner"
+    "sonar": "sonar-scanner",
+    "docker:build": "docker build -t petfinder-backend .",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down"
   },
   "repository": {
     "type": "git",
