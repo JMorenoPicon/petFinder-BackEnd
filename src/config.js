@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import dotenv from "dotenv";
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 
 // Cargar variables de entorno
 dotenv.config();
@@ -11,9 +11,9 @@ const connectDB = async () => {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
-        console.log(`Conexión exitosa a MongoDB Atlas`);
+        console.log('Conexión exitosa a MongoDB Atlas');
     } catch (error) {
-        console.error(`Error al conectar con MongoDB:`, error);
+        console.error('Error al conectar con MongoDB:', error);
         process.exit(1); // Termina el proceso si no puede conectar
     }
 };

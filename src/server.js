@@ -1,10 +1,11 @@
-import express from "express";
-import cors from "cors";
-import helmet from "helmet";
-import morgan from "morgan";
-import dotenv from "dotenv";
-import logger from "./helpers/logger/logger.js";
-import connectDB from "./config.js"; //import conneccion function
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import dotenv from 'dotenv';
+import logger from './helpers/logger/logger.js';
+import connectDB from './config.js'; //import conneccion function
+import routes from './routes/v1/index.js';
 
 dotenv.config();
 
@@ -17,13 +18,10 @@ connectDB();
 app.use(express.json());
 app.use(cors());
 app.use(helmet());
-app.use(morgan(`dev`, { stream: { write: message => logger.info(message.trim()) } }));
+app.use(morgan('dev', { stream: { write: message => logger.info(message.trim()) } }));
 
-// Ruta de prueba
-app.get(`/`, (req, res) => {
-    logger.info(`Solicitud recibida en /`);
-    res.json({ message: `API funcionando con seguridad y MongoDB Atlas 🚀` });
-});
+// Rutas
+app.use(process.env.APIBASE, routes);
 
 // Iniciar servidor
 const server = app.listen(process.env.PORT || 5000, () => {
