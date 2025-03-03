@@ -1,18 +1,7 @@
 version: '3.7'
-services:
-  backend:
-    build:
-      context: .
-    container_name: petfinder-backend
-    ports:
-      - "5000:5000"
-    volumes:
-      - .:/app
-    environment:
-      - NODE_ENV=development
-    networks:
-      - petfinder-network
 
+services:
+  # Servicio de SonarQube
   sonarqube:
     image: sonarqube:lts
     container_name: sonarqube
@@ -22,6 +11,45 @@ services:
       - sonarqube_data:/opt/sonarqube/data
       - sonarqube_extensions:/opt/sonarqube/extensions
       - sonarqube_logs:/opt/sonarqube/logs
+    environment:
+      - SONARQUBE_JDBC_URL=jdbc:postgresql://postgres:5432/sonar
+    networks:
+      - petfinder-network
+
+  # Servicio de base de datos PostgreSQL para SonarQube
+  postgres:
+    image: postgres:alpine
+    container_name: sonarqube-postgres
+    environment:
+      - POSTGRES_PASSWORD=sonar
+      - POSTGRES_USER=sonar
+    networks:
+      - petfinder-network
+
+  # Servicio de tu aplicación (backend)
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: petfinder-backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENV=development
+      - MONGO_URI=mongodb://mongo:27017/petfinder-dev
+    depends_on:
+      - mongo
+    networks:
+      - petfinder-network
+
+  # Servicio de base de datos MongoDB para tu aplicación
+  mongo:
+    image: mongo:latest
+    container_name: petfinder-mongo
+    ports:
+      - "27017:27017"
     networks:
       - petfinder-network
 

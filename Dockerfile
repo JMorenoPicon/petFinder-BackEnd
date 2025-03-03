@@ -1,5 +1,5 @@
 # Usa una imagen base de Node.js
-FROM node:16
+FROM node:22
 
 # Establece el directorio de trabajo
 WORKDIR /app
@@ -8,13 +8,15 @@ WORKDIR /app
 COPY package*.json ./
 
 # Instala las dependencias
-RUN npm install
+RUN npm ci --production
 
 # Copia todo el código fuente
-COPY . .
+ADD ./src ./src
 
 # Expone el puerto en el que la app escuchará
 EXPOSE 5000
 
+USER node
+
 # Comando para iniciar la aplicación
-CMD ["npm", "run", "dev"]
+CMD ["node", "src/server.js"]
