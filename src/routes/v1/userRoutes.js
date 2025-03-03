@@ -4,7 +4,7 @@ import { createUser, getUsers, getUserById, updateUser, deleteUser } from '../..
 const router = express.Router();
 
 // Rutas de usuarios
-router.post('/register', createUser);
+router.post('/', createUser);
 router.get('/', getUsers);
 router.get('/:id', getUserById);
 router.put('/:id', updateUser);
