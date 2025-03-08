@@ -3,7 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
-import logger from './helpers/logger/logger.js';
+import logger from './helpers/utils/logger/logger.js';
 import connectDB from './config.js'; //import connecction function
 import routes from './routes/v1/index.js';
 
