@@ -1,21 +1,16 @@
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
-// Cargar variables de entorno
 dotenv.config();
 
-// Conexión a MongoDB Atlas
-const connectDB = async () => {
-    try {
-        await mongoose.connect(process.env.MONGO_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
-        console.log('Conexión exitosa a MongoDB Atlas');
-    } catch (error) {
-        console.error('Error al conectar con MongoDB:', error);
-        process.exit(1); // Termina el proceso si no puede conectar
-    }
+const config = {
+    port: process.env.PORT || 5000,
+    level: process.env.NODE_ENV === 'production' ? 'error' : 'info', // Ajustar el nivel de logs
+
+    security: {
+        JWT_SECRET: process.env.JWT_SECRET, // Definición de la clave JWT (a implementar más adelante)
+    },
+
+    mongoUri: process.env.MONGO_URI, // URI para la conexión a la base de datos
 };
 
-export default connectDB;
+export default config;
