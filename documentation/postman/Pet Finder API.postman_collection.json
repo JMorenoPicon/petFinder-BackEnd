@@ -1,0 +1,543 @@
+{
+	"info": {
+		"_postman_id": "2f71a1ce-3252-419a-8f50-64a90707a2e0",
+		"name": "Pet Finder API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39236408"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "New User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": {{new_username}},\n  \"email\": {{new_email}},\n  \"password\": {{new_password}}\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apibase}}/users",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": {{email}},\n  \"password\": {{password}}\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apibase}}/users/login",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{apibase}}/users/profile",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"users",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin dashboard",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{apibase}}users/admin",
+							"host": [
+								"{{apibase}}users"
+							],
+							"path": [
+								"admin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{apibase}}/users",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{apibase}}/users/:id",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": {{new_username}},\n  \"email\": {{new_email}},\n  \"password\": {{new_password}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apibase}}/users/:id",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{apibase}}/users/:id",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Pets",
+			"item": [
+				{
+					"name": "Get all pets",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apibase}}/pets",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"pets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get pet by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apibase}}/pets/:id",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"pets",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{petid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create pet",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": {{petname}}, \n    \"species\": {{petspecie}}, \n    \"breed\": {{breed}}, \n    \"birthDate\": {{petbirthday}}, \n    \"description\": {{petdescription}}, \n    \"image\": {{petimage}}, \n    \"owner\": {{userId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apibase}}/pets",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"pets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update pet",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": {{petname}}, \n    \"species\": {{petspecie}}, \n    \"breed\": {{breed}}, \n    \"birthDate\": {{petbirthday}}, \n    \"description\": {{petdescription}}, \n    \"image\": {{petimage}}, \n    \"owner\": {{userId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apibase}}/pets/:id",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"pets",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{petid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete pet",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{apibase}}/pets/:id",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"pets",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{petid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "LostFoundReports",
+			"item": [
+				{
+					"name": "Get Reports",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apibase}}/lost-found",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"lost-found"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Report",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"petId\": {{petid}}, \n    \"reportType\": {{reporttype}}, \n    \"description\": {{reportdescription}}, \n    \"location\": {{reportlocation}}, \n    \"reporter\": {{userId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apibase}}/lost-found",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"lost-found"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Forum",
+			"item": [
+				{
+					"name": "Get all posts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apibase}}/forum",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"forum"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get post by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apibase}}/forum/:id",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"forum",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{postid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create post",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": {{posttitle}}, \n    \"content\": {{postcontent}}, \n    \"author\": {{userId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apibase}}/forum",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"forum"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update post",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": {{posttitle}}, \n    \"content\": {{postcontent}}, \n    \"author\": {{userId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apibase}}/forum/:id",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"forum",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{postid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete post",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{apibase}}/forum/:id",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"forum",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{postid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
