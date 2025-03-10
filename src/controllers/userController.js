@@ -2,6 +2,7 @@ import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import config from '../config.js';
+import { sendVerificationEmail, sendConfirmationEmail } from '../services/mailer.js';
 
 // Crear un nuevo usuario
 export const createUser = async (req, res) => {
@@ -12,18 +13,54 @@ export const createUser = async (req, res) => {
         const userExists = await User.findOne({ email });
         if (userExists) return res.status(400).json({ message: 'El usuario ya existe' });
 
+        //TODO // Generar un código de verificación aleatorio
+        // const verificationCode = Math.floor(100000 + Math.random() * 900000);  // Genera un código de 6 dígitos
+
         // Encriptar la contraseña
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const newUser = new User({ username, email, password: hashedPassword });
+        const newUser = new User({ username, email, password: hashedPassword/*, verificationCode, isVerified: false*/ });
         await newUser.save();
+
+        //TODO await sendVerificationEmail(email, verificationCode);  // Enviar el correo de verificación
 
         // Crear el token JWT
         const token = jwt.sign({ id: newUser._id, role: newUser.role }, config.security.JWT_SECRET, { expiresIn: '1h' });
 
-        res.status(201).send ({ message: 'Usuario registrado correctamente', user: newUser, token });
+        // Enviar el correo de confirmación de registro
+        await sendConfirmationEmail(email);
+
+        res.status(201).send ({ message: 'Usuario registrado correctamente, Revisa tu correo electrónico.', user: newUser, token });
     } catch (error) {
         res.status(500).json({ message: 'Error al crear el usuario', error });
+    }
+};
+
+//TODO Verificar el código de verificación
+export const verifyCode = async (req, res) => {
+    try {
+        const { email, verificationCode } = req.body;
+
+        // Buscar el usuario por el email
+        const user = await User.findOne({ email });
+        if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+
+        // Verificar si el código coincide
+        if (user.verificationCode !== verificationCode) {
+            return res.status(400).json({ message: 'Código incorrecto' });
+        }
+
+        // Marcar al usuario como verificado
+        user.isVerified = true;
+        user.verificationCode = null; // Limpiar el código después de la verificación
+        await user.save();
+
+        // Enviar correo de confirmación después del registro exitoso
+        await sendConfirmationEmail(email);
+
+        res.status(200).json({ message: 'Registro completado exitosamente' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al verificar el código', error });
     }
 };
 
