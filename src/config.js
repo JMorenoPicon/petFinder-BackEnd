@@ -11,6 +11,12 @@ const config = {
     },
 
     mongoUri: process.env.MONGO_URI, // URI para la conexión a la base de datos
+
+    email: {
+        service: 'gmail',
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+    },
 };
 
 export default config;
