@@ -53,6 +53,16 @@ services:
     networks:
       - petfinder-network
 
+  # Servicio de MailHog para pruebas de correo electrónico
+  mailhog:
+    image: mailhog/mailhog
+    container_name: petfinder-mailhog
+    ports:
+      - "1025:1025"  # Puerto SMTP (para enviar correos)
+      - "8025:8025"  # Puerto web (para ver los correos capturados)
+    networks:
+      - petfinder-network
+
 networks:
   petfinder-network:
     driver: bridge
