@@ -30,7 +30,7 @@ export const createUser = async (req, res) => {
         // Enviar el correo de confirmación de registro
         await sendConfirmationEmail(email);
 
-        res.status(201).send ({ message: 'Usuario registrado correctamente, Revisa tu correo electrónico.', user: newUser, token });
+        res.status(201).send({ message: 'Usuario registrado correctamente, Revisa tu correo electrónico.', user: newUser, data: { token } });
     } catch (error) {
         res.status(500).json({ message: 'Error al crear el usuario', error });
     }
