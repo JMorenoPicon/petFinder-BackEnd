@@ -52,3 +52,20 @@ export const sendConfirmationEmail = async (to) => {
         console.error('Error al enviar el correo de confirmación:', error);
     }
 };
+
+export async function sendResetEmail(to, token) {
+    const resetUrl = `http://localhost:3333/reset-password?token=${token}&email=${encodeURIComponent(to)}`;
+    const info = await transporter.sendMail({
+        from: '"PetFinder" <no-reply@petfinder.com>',
+        to,
+        subject: 'PetFinder – Recuperar contraseña',
+        html: `
+      <p>Has solicitado restablecer tu contraseña.</p>
+      <p>Código de verificación: <b>${token}</b></p>
+      <p>O haz clic aquí para cambiarla:</p>
+      <a href="${resetUrl}">${resetUrl}</a>
+      <p>Si no lo solicitaste, ignora este correo.</p>
+    `
+    });
+    console.log('Mail sent:', info.messageId);
+}
