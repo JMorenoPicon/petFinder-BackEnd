@@ -5,7 +5,17 @@ export const createPet = async (req, res) => {
     try {
         const { name, species, breed, birthDate, description, image } = req.body;
         const owner = req.user.id; // Cambia _id por id
-        const newPet = new Pet({ name, species, breed, birthDate, description, image, owner });
+
+        // Subir imagen a Cloudinary si es una URL local/base64
+        let imageUrl = image;
+        if (image && !image.startsWith('http')) {
+            const uploadResult = await cloudinary.uploader.upload(image, {
+                folder: 'pets',
+                public_id: `${name}_${Date.now()}`
+            });
+            imageUrl = uploadResult.secure_url;
+        }
+        const newPet = new Pet({ name, species, breed, birthDate, description, image:imageUrl, owner });
         await newPet.save();
         res.status(201).json(newPet);
     } catch (error) {
