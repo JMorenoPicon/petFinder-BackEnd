@@ -3,12 +3,13 @@ import Pet from '../models/Pet.js';
 // Crear una nueva mascota
 export const createPet = async (req, res) => {
     try {
-        const { name, species, breed, birthDate, description, image, owner } = req.body;
+        const { name, species, breed, birthDate, description, image } = req.body;
+        const owner = req.user.id; // Cambia _id por id
         const newPet = new Pet({ name, species, breed, birthDate, description, image, owner });
         await newPet.save();
         res.status(201).json(newPet);
     } catch (error) {
-        res.status(500).json({ message: 'Error al crear la mascota', error });
+        res.status(500).json({ message: `Error al crear la mascota: ${error}`, error });
     }
 };
 
