@@ -54,3 +54,29 @@ export const deletePet = async (req, res) => {
         res.status(500).json({ message: 'Error al eliminar la mascota', error });
     }
 };
+
+/**
+ * GET /api/v1/pets/adoptable
+ * Devuelve las mascotas disponibles para adopción.
+ */
+export const getAdoptablePets = async (req, res) => {
+    try {
+        const pets = await Pet.find({ status: 'available' }).sort({ createdAt: -1 }).limit(12);
+        res.status(200).json(pets);
+    } catch (err) {
+        res.status(500).json({ message: 'Error al obtener mascotas en adopción', error: err });
+    }
+};
+
+/**
+ * GET /api/v1/pets/lost
+ * Devuelve los avisos de mascotas perdidas.
+ */
+export const getLostPets = async (req, res) => {
+    try {
+        const pets = await Pet.find({ status: 'lost' }).sort({ createdAt: -1 }).limit(12);
+        res.status(200).json(pets);
+    } catch (err) {
+        res.status(500).json({ message: 'Error al obtener mascotas perdidas', error: err });
+    }
+};

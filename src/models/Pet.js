@@ -28,12 +28,16 @@ const petSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: ['available', 'reserved', 'lost'],
-        default: 'available'
+        default: 'available',
+        required: true
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User', // Referencia a la colección de Usuarios
         required: true
+    },
+    lastSeen: { // solo para status="lost"
+        type: String
     },
     reservedAt: {
         type: Date, // Fecha en que se reservó
