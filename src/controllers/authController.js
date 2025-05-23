@@ -2,6 +2,8 @@
 import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
 import { sendResetEmail } from '../services/mailer.js';
+import jwt from 'jsonwebtoken';
+import config from '../config.js';
 
 /**
  * 1) Genera un código, lo almacena en el usuario y envía el mail.
@@ -57,4 +59,25 @@ export async function resetPassword(req, res) {
     await user.save();
 
     res.json({ message: 'Contraseña restablecida correctamente' });
+}
+
+export function refreshToken(req, res) {
+    const authHeader = req.header('Authorization');
+    if (!authHeader) {
+        return res.status(401).json({ message: 'No se proporcionó token' });
+    }
+    const token = authHeader.replace('Bearer ', '');
+
+    try {
+        const decoded = jwt.verify(token, config.security.JWT_SECRET);
+        // Generar un nuevo token con los mismos datos y nueva expiración
+        const newToken = jwt.sign(
+            { id: decoded.id, role: decoded.role },
+            config.security.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+        res.json({ token: newToken });
+    } catch (error) {
+        res.status(401).json({ message: 'Token inválido o expirado', error });
+    }
 }
