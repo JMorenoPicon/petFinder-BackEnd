@@ -1,11 +1,22 @@
 import Pet from '../models/Pet.js';
+import cloudinary from '../helpers/cloudinary.js';
 
 // Crear una nueva mascota
 export const createPet = async (req, res) => {
     try {
         const { name, species, breed, birthDate, description, image } = req.body;
         const owner = req.user.id; // Cambia _id por id
-        const newPet = new Pet({ name, species, breed, birthDate, description, image, owner });
+
+        // Subir imagen a Cloudinary si es una URL local/base64
+        let imageUrl = image;
+        if (image && !image.startsWith('http')) {
+            const uploadResult = await cloudinary.uploader.upload(image, {
+                folder: 'pets',
+                public_id: `${name}_${Date.now()}`
+            });
+            imageUrl = uploadResult.secure_url;
+        }
+        const newPet = new Pet({ name, species, breed, birthDate, description, image:imageUrl, owner });
         await newPet.save();
         res.status(201).json(newPet);
     } catch (error) {
@@ -37,7 +48,18 @@ export const getPetById = async (req, res) => {
 // Actualizar una mascota
 export const updatePet = async (req, res) => {
     try {
-        const updatedPet = await Pet.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        let updateData = { ...req.body };
+
+        // Si se envía una nueva imagen y no es URL, subir a Cloudinary
+        if (updateData.image && !updateData.image.startsWith('http')) {
+            const uploadResult = await cloudinary.uploader.upload(updateData.image, {
+                folder: 'pets',
+                public_id: `${updateData.name || 'pet'}_${Date.now()}`
+            });
+            updateData.image = uploadResult.secure_url;
+        }
+
+        const updatedPet = await Pet.findByIdAndUpdate(req.params.id, updateData, { new: true });
         if (!updatedPet) return res.status(404).json({ message: 'Mascota no encontrada' });
         res.status(200).json(updatedPet);
     } catch (error) {
