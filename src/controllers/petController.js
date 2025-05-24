@@ -4,10 +4,27 @@ import cloudinary from '../helpers/cloudinary.js';
 // Crear una nueva mascota
 export const createPet = async (req, res) => {
     try {
-        const { name, species, breed, birthDate, description, image } = req.body;
-        const owner = req.user.id; // Cambia _id por id
+        const {
+            name,
+            species,
+            breed,
+            birthDate,
+            description,
+            image,
+            status,
+            lastSeen,
+            reservedAt
+        } = req.body;
+        const owner = req.user.id;
 
-        // Subir imagen a Cloudinary si es una URL local/base64
+        // Validar que la fecha de nacimiento no sea futura
+        const birth = new Date(birthDate);
+        const now = new Date();
+        if (birth > now) {
+            return res.status(400).json({ message: 'La fecha de nacimiento no puede ser futura.' });
+        }
+
+        // Subir imagen a Cloudinary si es base64/local
         let imageUrl = image;
         if (image && !image.startsWith('http')) {
             const uploadResult = await cloudinary.uploader.upload(image, {
@@ -16,7 +33,22 @@ export const createPet = async (req, res) => {
             });
             imageUrl = uploadResult.secure_url;
         }
-        const newPet = new Pet({ name, species, breed, birthDate, description, image:imageUrl, owner });
+
+        // Construir el objeto de la mascota
+        const petData = {
+            name,
+            species,
+            breed,
+            birthDate,
+            description,
+            image: imageUrl,
+            status,
+            owner
+        };
+        if (status === 'lost' && lastSeen) petData.lastSeen = lastSeen;
+        if (status === 'reserved' && reservedAt) petData.reservedAt = reservedAt;
+
+        const newPet = new Pet(petData);
         await newPet.save();
         res.status(201).json(newPet);
     } catch (error) {
