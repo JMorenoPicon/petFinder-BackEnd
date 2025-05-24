@@ -103,3 +103,21 @@ export const getLostPets = async (req, res) => {
         res.status(500).json({ message: 'Error al obtener mascotas perdidas', error: err });
     }
 };
+
+/**
+ * Obtiene todas las mascotas asociadas al usuario autenticado.
+ *
+ * @async
+ * @function getMyPets
+ * @param {import('express').Request} req - Objeto de solicitud de Express, debe contener el usuario autenticado en `req.user`.
+ * @param {import('express').Response} res - Objeto de respuesta de Express.
+ * @returns {Promise<void>} Retorna una respuesta JSON con las mascotas del usuario o un mensaje de error.
+ */
+export const getMyPets = async (req, res) => {
+    try {
+        const pets = await Pet.find({ owner: req.user.id });
+        res.status(200).json(pets);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener tus mascotas', error });
+    }
+};
