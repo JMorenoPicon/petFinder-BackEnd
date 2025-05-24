@@ -12,6 +12,7 @@ router.post('/login', loginUser); // Iniciar sesion
 
 //Rutas privadas para el usuario
 router.get('/profile', authMiddleware, userRole, getProfile);
+router.put('/profile', authMiddleware, userRole, updateUser);
 
 //Rutas para panel de administrador
 router.get('/admin', authMiddleware, adminRole, getAdminPanel);
@@ -19,7 +20,6 @@ router.get('/admin', authMiddleware, adminRole, getAdminPanel);
 // Rutas protegidas (requieren autenticacion)
 router.get('/', authMiddleware, adminRole, getUsers);
 router.get('/:id', authMiddleware, adminRole, getUserById);
-router.put('/:id', authMiddleware, userRole, updateUser);
 router.delete('/:id', authMiddleware, userRole, deleteUser);
 
 export default router;

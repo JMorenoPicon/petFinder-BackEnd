@@ -135,7 +135,32 @@ export const getAdminPanel = async (req, res) => {
 // Actualizar un usuario (solo el propio usuario o admin)
 export const updateUser = async (req, res) => {
     try {
-        const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const { username, email, password, currentPassword } = req.body;
+
+        // 1. Buscar el usuario actual
+        const user = await User.findById(req.user.id);
+        if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+
+        // 2. Validar currentPassword
+        if (!currentPassword) {
+            return res.status(400).json({ message: 'Debes introducir tu contraseña actual para actualizar el perfil.' });
+        }
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'La contraseña actual es incorrecta.' });
+        }
+
+        // 3. Preparar los datos a actualizar
+        const updateData = {};
+        if (username) updateData.username = username;
+        if (email) updateData.email = email;
+        if (password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            updateData.password = hashedPassword;
+        }
+
+        // 4. Actualizar usuario
+        const updatedUser = await User.findByIdAndUpdate(req.user.id, updateData, { new: true });
         if (!updatedUser) return res.status(404).json({ message: 'Usuario no encontrado' });
         res.status(200).json(updatedUser);
     } catch (error) {

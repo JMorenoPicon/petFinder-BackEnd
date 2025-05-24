@@ -4,10 +4,27 @@ import cloudinary from '../helpers/cloudinary.js';
 // Crear una nueva mascota
 export const createPet = async (req, res) => {
     try {
-        const { name, species, breed, birthDate, description, image } = req.body;
-        const owner = req.user.id; // Cambia _id por id
+        const {
+            name,
+            species,
+            breed,
+            birthDate,
+            description,
+            image,
+            status,
+            lastSeen,
+            reservedAt
+        } = req.body;
+        const owner = req.user.id;
 
-        // Subir imagen a Cloudinary si es una URL local/base64
+        // Validar que la fecha de nacimiento no sea futura
+        const birth = new Date(birthDate);
+        const now = new Date();
+        if (birth > now) {
+            return res.status(400).json({ message: 'La fecha de nacimiento no puede ser futura.' });
+        }
+
+        // Subir imagen a Cloudinary si es base64/local
         let imageUrl = image;
         if (image && !image.startsWith('http')) {
             const uploadResult = await cloudinary.uploader.upload(image, {
@@ -16,7 +33,22 @@ export const createPet = async (req, res) => {
             });
             imageUrl = uploadResult.secure_url;
         }
-        const newPet = new Pet({ name, species, breed, birthDate, description, image:imageUrl, owner });
+
+        // Construir el objeto de la mascota
+        const petData = {
+            name,
+            species,
+            breed,
+            birthDate,
+            description,
+            image: imageUrl,
+            status,
+            owner
+        };
+        if (status === 'lost' && lastSeen) petData.lastSeen = lastSeen;
+        if (status === 'reserved' && reservedAt) petData.reservedAt = reservedAt;
+
+        const newPet = new Pet(petData);
         await newPet.save();
         res.status(201).json(newPet);
     } catch (error) {
@@ -84,7 +116,7 @@ export const deletePet = async (req, res) => {
  */
 export const getAdoptablePets = async (req, res) => {
     try {
-        const pets = await Pet.find({ status: 'available' }).sort({ createdAt: -1 }).limit(12);
+        const pets = await Pet.find({ status: 'available' }).sort({ createdAt: -1 }).limit(4);
         res.status(200).json(pets);
     } catch (err) {
         res.status(500).json({ message: 'Error al obtener mascotas en adopción', error: err });
@@ -97,9 +129,27 @@ export const getAdoptablePets = async (req, res) => {
  */
 export const getLostPets = async (req, res) => {
     try {
-        const pets = await Pet.find({ status: 'lost' }).sort({ createdAt: -1 }).limit(12);
+        const pets = await Pet.find({ status: 'lost' }).sort({ createdAt: -1 }).limit(4);
         res.status(200).json(pets);
     } catch (err) {
         res.status(500).json({ message: 'Error al obtener mascotas perdidas', error: err });
+    }
+};
+
+/**
+ * Obtiene todas las mascotas asociadas al usuario autenticado.
+ *
+ * @async
+ * @function getMyPets
+ * @param {import('express').Request} req - Objeto de solicitud de Express, debe contener el usuario autenticado en `req.user`.
+ * @param {import('express').Response} res - Objeto de respuesta de Express.
+ * @returns {Promise<void>} Retorna una respuesta JSON con las mascotas del usuario o un mensaje de error.
+ */
+export const getMyPets = async (req, res) => {
+    try {
+        const pets = await Pet.find({ owner: req.user.id });
+        res.status(200).json(pets);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener tus mascotas', error });
     }
 };
