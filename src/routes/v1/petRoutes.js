@@ -8,12 +8,12 @@ const router = express.Router();
 
 // Rutas de mascotas
 router.post('/', authMiddleware, createPet);
-router.get('/', authMiddleware, getPets);
 router.get('/adoptable', authMiddleware, getAdoptablePets);
 router.get('/lost', authMiddleware, getLostPets);
 router.get('/mine', authMiddleware, getMyPets);
+router.delete('/:id', authMiddleware, ownerUser, deletePet);
+router.get('/', authMiddleware, getPets);
 router.get('/:id', authMiddleware, getPetById);
 router.put('/:id', authMiddleware, ownerUser, updatePet);
-router.delete('/:id', authMiddleware, ownerUser, deletePet);
 
 export default router;

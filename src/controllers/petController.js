@@ -116,7 +116,7 @@ export const deletePet = async (req, res) => {
  */
 export const getAdoptablePets = async (req, res) => {
     try {
-        const pets = await Pet.find({ status: 'available' }).sort({ createdAt: -1 }).limit(12);
+        const pets = await Pet.find({ status: 'available' }).sort({ createdAt: -1 }).limit(4);
         res.status(200).json(pets);
     } catch (err) {
         res.status(500).json({ message: 'Error al obtener mascotas en adopción', error: err });
@@ -129,7 +129,7 @@ export const getAdoptablePets = async (req, res) => {
  */
 export const getLostPets = async (req, res) => {
     try {
-        const pets = await Pet.find({ status: 'lost' }).sort({ createdAt: -1 }).limit(12);
+        const pets = await Pet.find({ status: 'lost' }).sort({ createdAt: -1 }).limit(4);
         res.status(200).json(pets);
     } catch (err) {
         res.status(500).json({ message: 'Error al obtener mascotas perdidas', error: err });
