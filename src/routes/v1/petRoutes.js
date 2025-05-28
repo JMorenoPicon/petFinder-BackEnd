@@ -12,8 +12,8 @@ router.get('/adoptable', authMiddleware, getAdoptablePets);
 router.get('/lost', authMiddleware, getLostPets);
 router.get('/mine', authMiddleware, getMyPets);
 router.delete('/:id', authMiddleware, ownerUser, deletePet);
-router.get('/', authMiddleware, getPets);
 router.get('/:id', authMiddleware, getPetById);
+router.get('/', authMiddleware, getPets);
 router.put('/:id', authMiddleware, ownerUser, updatePet);
 
 export default router;
