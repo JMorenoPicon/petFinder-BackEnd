@@ -21,6 +21,10 @@ const petSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    city: {
+        type: String,
+        required: true // ponlo en true si quieres que sea obligatorio
+    },
     image: {
         type: String, // URL de la imagen
         required: true

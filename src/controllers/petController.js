@@ -10,6 +10,7 @@ export const createPet = async (req, res) => {
             breed,
             birthDate,
             description,
+            city, // Ciudad de la mascota
             image,
             status,
             lastSeen,
@@ -41,6 +42,7 @@ export const createPet = async (req, res) => {
             breed,
             birthDate,
             description,
+            city,
             image: imageUrl,
             status,
             owner
