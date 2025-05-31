@@ -167,6 +167,15 @@ export const getLostPets = async (req, res) => {
     }
 };
 
+export const getFoundPets = async (req, res) => {
+    try {
+        const pets = await Pet.find({ status: 'found' }).sort({ createdAt: -1 }).limit(4);
+        res.status(200).json(pets);
+    } catch (err) {
+        res.status(500).json({ message: 'Error al obtener mascotas encontradas', error: err });
+    }
+};
+
 /**
  * Obtiene todas las mascotas asociadas al usuario autenticado.
  *
@@ -182,5 +191,29 @@ export const getMyPets = async (req, res) => {
         res.status(200).json(pets);
     } catch (error) {
         res.status(500).json({ message: 'Error al obtener tus mascotas', error });
+    }
+};
+
+export const markPetAsFound = async (req, res) => {
+    try {
+        const { foundAt, foundLocationLat, foundLocationLng } = req.body;
+        const pet = await Pet.findById(req.params.id);
+
+        if (!pet) return res.status(404).json({ message: 'Mascota no encontrada' });
+
+        // Solo el dueño puede marcar como encontrada
+        if (pet.owner.toString() !== req.user.id) {
+            return res.status(403).json({ message: 'No tienes permiso para modificar esta mascota' });
+        }
+
+        pet.status = 'found';
+        pet.foundAt = foundAt || new Date();
+        pet.foundLocationLat = foundLocationLat;
+        pet.foundLocationLng = foundLocationLng;
+
+        await pet.save();
+        res.status(200).json(pet);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al marcar la mascota como encontrada', error });
     }
 };

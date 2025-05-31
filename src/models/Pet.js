@@ -31,9 +31,21 @@ const petSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['available', 'reserved', 'lost'],
+        enum: ['available', 'reserved', 'lost', 'found'],
         default: 'available',
         required: true
+    },
+    foundAt: {
+        type: Date,
+        default: null
+    },
+    foundLocationLat: {
+        type: Number,
+        default: null
+    },
+    foundLocationLng: {
+        type: Number,
+        default: null
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
