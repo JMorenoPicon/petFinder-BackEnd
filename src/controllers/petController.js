@@ -14,9 +14,19 @@ export const createPet = async (req, res) => {
             image,
             status,
             lastSeen,
-            reservedAt
+            reservedAt,
+            locationLat,
+            locationLng
         } = req.body;
         const owner = req.user.id;
+
+        // Validar campos obligatorios
+        const requiredFields = ['name', 'species', 'breed', 'birthDate', 'description', 'city', 'status'];
+        for (const field of requiredFields) {
+            if (!req.body[field] || req.body[field] === '') {
+                return res.status(400).json({ message: `El campo '${field}' es obligatorio.` });
+            }
+        }
 
         // Validar que la fecha de nacimiento no sea futura
         const birth = new Date(birthDate);
@@ -49,6 +59,10 @@ export const createPet = async (req, res) => {
         };
         if (status === 'lost' && lastSeen) petData.lastSeen = lastSeen;
         if (status === 'reserved' && reservedAt) petData.reservedAt = reservedAt;
+        if (status === 'lost') {
+            if (locationLat) petData.locationLat = locationLat;
+            if (locationLng) petData.locationLng = locationLng;
+        }
 
         const newPet = new Pet(petData);
         await newPet.save();
@@ -83,6 +97,21 @@ export const getPetById = async (req, res) => {
 export const updatePet = async (req, res) => {
     try {
         let updateData = { ...req.body };
+
+        // Validar campos obligatorios
+        const requiredFields = ['name', 'species', 'breed', 'birthDate', 'description', 'city', 'status'];
+        for (const field of requiredFields) {
+            if (updateData[field] === undefined || updateData[field] === null || updateData[field] === '') {
+                return res.status(400).json({ message: `El campo '${field}' es obligatorio.` });
+            }
+        }
+
+        // Validar que la fecha de nacimiento no sea futura
+        const birth = new Date(updateData.birthDate);
+        const now = new Date();
+        if (birth > now) {
+            return res.status(400).json({ message: 'La fecha de nacimiento no puede ser futura.' });
+        }
 
         // Si se envía una nueva imagen y no es URL, subir a Cloudinary
         if (updateData.image && !updateData.image.startsWith('http')) {

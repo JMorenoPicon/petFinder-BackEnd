@@ -46,6 +46,12 @@ const petSchema = new mongoose.Schema({
     reservedAt: {
         type: Date, // Fecha en que se reservó
         default: null
+    },
+    locationLat: {
+        type: Number, // Latitud de la ubicación
+    },
+    locationLng: {
+        type: Number, // Longitud de la ubicación
     }
 }, {
     timestamps: true // Añade automáticamente createdAt y updatedAt
