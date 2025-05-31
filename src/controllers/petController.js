@@ -85,7 +85,7 @@ export const getPets = async (req, res) => {
 // Obtener una mascota por ID
 export const getPetById = async (req, res) => {
     try {
-        const pet = await Pet.findById(req.params.id);
+        const pet = await Pet.findById(req.params.id).populate('owner', 'email');
         if (!pet) return res.status(404).json({ message: 'Mascota no encontrada' });
         res.status(200).json(pet);
     } catch (error) {
