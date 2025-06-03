@@ -1,4 +1,3 @@
-// src/routes/authRoutes.js
 import express from 'express';
 import { forgotPassword, resetPassword, refreshToken } from '../../controllers/authController.js';
 

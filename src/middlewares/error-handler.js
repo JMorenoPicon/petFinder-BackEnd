@@ -1,7 +1,7 @@
 import logger from '../helpers/utils/logger/logger.js';
 
 // Middleware para manejo de errores
-export default function errorHandler(err, req, res, next) {
+export default function errorHandler(err, req, res) {
     const status = err.status || 500; // Establecer código de estado por defecto 500
     const message = err.message || 'Internal Server Error'; // Mensaje de error por defecto
     const stack = err.stack || ''; // Stack trace (útil para errores internos)
