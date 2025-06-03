@@ -1,5 +1,5 @@
 import express from 'express';
-import { createUser, loginUser, getUsers, getUserById, updateUser, deleteUser, getProfile, getAdminPanel } from '../../controllers/userController.js';
+import { createUser, loginUser, getUsers, getUserById, updateUser, deleteUser, getProfile, getAdminPanel, verifyCode } from '../../controllers/userController.js';
 import { authMiddleware } from '../../middlewares/auth/authMiddleware.js';  // Middleware de autenticación
 import { adminRole, userRole } from '../../middlewares/auth/roleMiddleware.js';  // Middleware de roles
 
@@ -9,6 +9,7 @@ const router = express.Router();
 // Rutas publicas
 router.post('/', createUser); // Crear usuario
 router.post('/login', loginUser); // Iniciar sesion
+router.post('/verify', verifyCode);
 
 //Rutas privadas para el usuario
 router.get('/profile', authMiddleware, userRole, getProfile);

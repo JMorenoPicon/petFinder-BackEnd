@@ -22,7 +22,12 @@ const userSchema = new mongoose.Schema({
         default: 'user'
     },
     resetPasswordToken: String,
-    resetPasswordExpires: Date
+    resetPasswordExpires: Date,
+    verificationCode: String,
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
 }, {
     timestamps: true // Añade automáticamente createdAt y updatedAt
 });

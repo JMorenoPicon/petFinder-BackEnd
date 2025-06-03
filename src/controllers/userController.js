@@ -13,30 +13,25 @@ export const createUser = async (req, res) => {
         const userExists = await User.findOne({ email });
         if (userExists) return res.status(400).json({ message: 'El usuario ya existe' });
 
-        //TODO // Generar un código de verificación aleatorio
-        // const verificationCode = Math.floor(100000 + Math.random() * 900000);  // Genera un código de 6 dígitos
+        // Generar un código de verificación aleatorio
+        const verificationCode = Math.floor(100000 + Math.random() * 900000);  // Genera un código de 6 dígitos
 
         // Encriptar la contraseña
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const newUser = new User({ username, email, password: hashedPassword/*, verificationCode, isVerified: false*/ });
+        const newUser = new User({ username, email, password: hashedPassword, verificationCode, isVerified: false });
         await newUser.save();
 
-        //TODO await sendVerificationEmail(email, verificationCode);  // Enviar el correo de verificación
+        // Enviar el correo de verificación
+        await sendVerificationEmail(email, verificationCode);
 
-        // Crear el token JWT
-        const token = jwt.sign({ id: newUser._id, role: newUser.role }, config.security.JWT_SECRET, { expiresIn: '1h' });
-
-        // Enviar el correo de confirmación de registro
-        await sendConfirmationEmail(email);
-
-        res.status(201).send({ message: 'Usuario registrado correctamente, Revisa tu correo electrónico.', user: newUser, data: { token } });
+        res.status(201).send({ message: 'Usuario registrado correctamente, Revisa tu correo electrónico.', user: newUser });
     } catch (error) {
         res.status(500).json({ message: 'Error al crear el usuario', error });
     }
 };
 
-//TODO Verificar el código de verificación
+// Verificar el código de verificación
 export const verifyCode = async (req, res) => {
     try {
         const { email, verificationCode } = req.body;
@@ -72,6 +67,11 @@ export const loginUser = async (req, res) => {
         // Verificar si el usuario existe
         const user = await User.findOne({ email });
         if (!user) return res.status(400).json({ message: 'Credenciales inválidas' });
+
+        // Verificar si el usuario está verificado
+        if (!user.isVerified) {
+            return res.status(403).json({ message: 'Debes verificar tu correo electrónico antes de iniciar sesión.' });
+        }
 
         // Verificar la contraseña
         const isMatch = await bcrypt.compare(password, user.password);
