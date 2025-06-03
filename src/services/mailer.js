@@ -15,7 +15,7 @@ export const sendVerificationEmail = async (to, code) => {
         from: config.email.user,  // Correo de la cuenta Gmail
         to: to,                   // Correo del usuario
         subject: 'Verifica tu correo en Pet Finder',
-        text: `Tu código de verificación es: ${code}. Ingresa este código en la aplicación para completar tu registro.`,
+        text: `Tu código de verificación es: ${code}.`,
     };
 
     try {

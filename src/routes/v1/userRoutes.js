@@ -10,13 +10,13 @@ const router = express.Router();
 router.post('/', createUser); // Crear usuario
 router.post('/login', loginUser); // Iniciar sesion
 router.post('/verify', verifyCode);
-router.post('/verify-email-change', verifyEmailChange);
 
 //Rutas privadas para el usuario
 router.get('/profile', authMiddleware, userRole, getProfile);
 router.put('/profile', authMiddleware, userRole, updateUser);
 router.post('/request-email-change', authMiddleware, requestEmailChange);
 router.post('/confirm-email-change', authMiddleware, confirmEmailChange);
+router.post('/verify-email-change', authMiddleware, verifyEmailChange);
 
 //Rutas para panel de administrador
 router.get('/admin', authMiddleware, adminRole, getAdminPanel);
