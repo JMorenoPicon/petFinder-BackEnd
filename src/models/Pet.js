@@ -21,23 +21,49 @@ const petSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    city: {
+        type: String,
+        required: true // ponlo en true si quieres que sea obligatorio
+    },
     image: {
         type: String, // URL de la imagen
         required: true
     },
     status: {
         type: String,
-        enum: ['available', 'reserved', 'lost'],
-        default: 'available'
+        enum: ['available', 'reserved', 'lost', 'found'],
+        default: 'available',
+        required: true
+    },
+    foundAt: {
+        type: Date,
+        default: null
+    },
+    foundLocationLat: {
+        type: Number,
+        default: null
+    },
+    foundLocationLng: {
+        type: Number,
+        default: null
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User', // Referencia a la colección de Usuarios
         required: true
     },
+    lastSeen: { // solo para status="lost"
+        type: String
+    },
     reservedAt: {
         type: Date, // Fecha en que se reservó
         default: null
+    },
+    locationLat: {
+        type: Number, // Latitud de la ubicación
+    },
+    locationLng: {
+        type: Number, // Longitud de la ubicación
     }
 }, {
     timestamps: true // Añade automáticamente createdAt y updatedAt

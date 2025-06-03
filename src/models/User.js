@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -19,10 +20,29 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['user', 'admin'],
         default: 'user'
-    }
+    },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
+    verificationCode: String,
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
+    pendingEmail: {
+        type: String,
+        default: null
+    },
+    pendingEmailCode: {
+        type: String,
+        default: null
+    },
 }, {
     timestamps: true // Añade automáticamente createdAt y updatedAt
 });
+
+userSchema.methods.comparePassword = async function (password) {
+    return bcrypt.compare(password, this.password);
+};
 
 const User = mongoose.model('User', userSchema);
 
