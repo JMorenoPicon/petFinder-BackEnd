@@ -84,7 +84,6 @@ export const loginUser = async (req, res) => {
         res.status(200).json({ message: 'Inicio de sesión exitoso', user, token });
     } catch (error) {
         res.status(500).json({ message: 'Error al iniciar sesión', error });
-        console.error(error);
     }
 };
 
@@ -177,5 +176,80 @@ export const deleteUser = async (req, res) => {
         res.status(200).json({ message: 'Usuario eliminado exitosamente' });
     } catch (error) {
         res.status(500).json({ message: 'Error al eliminar el usuario', error });
+    }
+};
+
+// Solicitar cambio de email
+export const requestEmailChange = async (req, res) => {
+    try {
+        const { newEmail } = req.body;
+        // Verifica que el nuevo email no esté en uso
+        const exists = await User.findOne({ email: newEmail });
+        if (exists) return res.status(400).json({ message: 'Ese email ya está en uso.' });
+
+        // Genera código de verificación
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+        // Guarda el email pendiente y el código en el usuario autenticado
+        const user = await User.findById(req.user.id);
+        user.pendingEmail = newEmail;
+        user.pendingEmailCode = code;
+        await user.save();
+
+        // Envía el código al nuevo email
+        await sendVerificationEmail(newEmail, code);
+
+        res.status(200).json({ message: 'Código enviado al nuevo email.' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al solicitar cambio de email', error });
+    }
+};
+
+// Confirmar cambio de email
+export const confirmEmailChange = async (req, res) => {
+    try {
+        const { code } = req.body;
+        const user = await User.findById(req.user.id);
+
+        if (!user.pendingEmail || !user.pendingEmailCode) {
+            return res.status(400).json({ message: 'No hay cambio de email pendiente.' });
+        }
+        if (user.pendingEmailCode !== code) {
+            return res.status(400).json({ message: 'Código incorrecto.' });
+        }
+
+        // Realiza el cambio
+        user.email = user.pendingEmail;
+        user.pendingEmail = null;
+        user.pendingEmailCode = null;
+        await user.save();
+
+        res.status(200).json({ message: 'Email actualizado correctamente.' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al confirmar cambio de email', error });
+    }
+};
+
+export const verifyEmailChange = async (req, res) => {
+    try {
+        const { oldEmail, newEmail, verificationCode } = req.body;
+        // Busca el usuario por el email antiguo
+        const user = await User.findOne({ email: oldEmail });
+        if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+
+        // Verifica que el nuevo email y el código coincidan
+        if (user.pendingEmail !== newEmail || user.pendingEmailCode !== verificationCode) {
+            return res.status(400).json({ message: 'Código o email incorrecto.' });
+        }
+
+        // Realiza el cambio
+        user.email = newEmail;
+        user.pendingEmail = null;
+        user.pendingEmailCode = null;
+        await user.save();
+
+        res.status(200).json({ message: 'Email actualizado correctamente.' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al verificar el cambio de email', error });
     }
 };

@@ -28,6 +28,14 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    pendingEmail: {
+        type: String,
+        default: null
+    },
+    pendingEmailCode: {
+        type: String,
+        default: null
+    },
 }, {
     timestamps: true // Añade automáticamente createdAt y updatedAt
 });
