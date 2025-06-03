@@ -17,9 +17,3 @@ export function logDate(req, res, next) {
 
     next(); // Pasar al siguiente middleware o ruta
 }
-
-// Middleware de ejemplo para registrar advertencias
-// export function logMDW(req, res, next) {
-//     logger.warn(`Warning: Middleware log for request to ${req.path}`);
-//     next();
-// }

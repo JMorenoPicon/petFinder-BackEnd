@@ -1,4 +1,3 @@
-// src/controllers/authController.js
 import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
 import { sendResetEmail } from '../services/mailer.js';
@@ -27,9 +26,8 @@ export async function forgotPassword(req, res) {
     try {
         await sendResetEmail(email, token);
         res.json({ message: 'Código de verificación enviado por correo' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Error enviando correo' });
+    } catch {
+        res.status(500).json({ message: 'Error al enviar el correo de restablecimiento' });
     }
 }
 

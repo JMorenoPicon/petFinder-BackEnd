@@ -1,4 +1,3 @@
-// src/middlewares/authMiddleware.js
 import jwt from 'jsonwebtoken';
 import config from '../../config.js';  // Para obtener la clave secreta JWT
 
