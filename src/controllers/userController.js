@@ -70,7 +70,17 @@ export const loginUser = async (req, res) => {
 
         // Verificar si el usuario está verificado
         if (!user.isVerified) {
-            return res.status(403).json({ message: 'Debes verificar tu correo electrónico antes de iniciar sesión.' });
+            // Generar un código de verificación aleatorio
+            const verificationCode = Math.floor(100000 + Math.random() * 900000);  // Genera un código de 6 dígitos
+            // Guardar el código en el usuario
+            user.verificationCode = verificationCode;
+            await user.save();
+            // Reenviar el código de verificación aquí
+            await sendVerificationEmail(user.email, verificationCode);
+            return res.status(200).json({
+                message: 'Debes verificar tu correo electrónico antes de iniciar sesión.',
+                isVerified: false
+            });
         }
 
         // Verificar la contraseña
