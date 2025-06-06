@@ -7,11 +7,6 @@ import authRoutes from './authRoutes.js';
 
 const router = express.Router();
 
-// Health check endpoint
-router.get('/health', (req, res) => {
-    res.status(200).json({ status: 'ok', message: 'PetFinder API healthy' });
-});
-
 router.use('/users', userRoutes);
 router.use('/pets', petRoutes);
 router.use('/comments', commentRoutes);
