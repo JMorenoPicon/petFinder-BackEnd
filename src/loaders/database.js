@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import config from '../config.js'; // Para obtener el URI de la base de datos desde .env
-import logger from '../helpers/utils/logger.js'; // Para registrar errores
+import logger from '../helpers/utils/logger/logger.js'; // Para registrar errores
 
 const connectDB = async () => {
     try {
