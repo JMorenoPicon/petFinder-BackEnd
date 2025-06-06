@@ -15,6 +15,11 @@ export default function (server) {
     server.use(cors());           // Habilitar CORS
     server.use(logDate); // Middleware para registrar las solicitudes
 
+    // Health check global para Render
+    server.get('/', (req, res) => {
+        res.status(200).json({ status: 'ok', message: 'PetFinder API healthy' });
+    });
+
     // Documentación Swagger accesible en /api-docs
     server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
