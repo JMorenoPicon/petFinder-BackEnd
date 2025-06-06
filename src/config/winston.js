@@ -12,7 +12,7 @@ const winstonConfig = {
             format: combine(
                 timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), // Añadir timestamp
                 colorize(), // Colorear los logs si no es producción
-                printf((info) => `[${info.timestamp}] ${info.level}: ${info.message}`), // Formato personalizado de log
+                printf((info) => `[${info.timestamp}] ${info.level}: ${info.message}`),
             ),
             silent: process.env.NODE_ENV === 'test', // Desactivar logs en pruebas
         }),
