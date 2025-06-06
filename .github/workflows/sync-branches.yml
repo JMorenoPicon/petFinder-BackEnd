@@ -1,0 +1,38 @@
+name: Sync branches after production merge
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync-branches:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge main into dev
+        run: |
+          git checkout dev || git checkout -b dev
+          git merge main --no-edit
+          git push origin dev
+
+      - name: Merge main into staging
+        run: |
+          git checkout staging || git checkout -b staging
+          git merge main --no-edit
+          git push origin staging
+
+      - name: Merge main into local
+        run: |
+          git checkout local || git checkout -b local
+          git merge main --no-edit
+          git push origin local
