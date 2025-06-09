@@ -1,22 +1,101 @@
 {
 	"info": {
-		"_postman_id": "2f71a1ce-3252-419a-8f50-64a90707a2e0",
+		"_postman_id": "petfinder-backend-collection",
 		"name": "Pet Finder API",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "39236408"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Users",
+			"name": "Auth",
 			"item": [
 				{
-					"name": "New User",
+					"name": "Forgot Password",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"username\": {{new_username}},\n  \"email\": {{new_email}},\n  \"password\": {{new_password}}\n}\n",
+							"raw": "{\n  \"email\": \"{{email}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apibase}}/auth/forgot-password",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"auth",
+								"forgot-password"
+							]
+						}
+					}
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{email}}\",\n  \"token\": \"123456\",\n  \"newPassword\": \"NuevaPassword123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apibase}}/auth/reset-password",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"auth",
+								"reset-password"
+							]
+						}
+					}
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{apibase}}/auth/refresh-token",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"auth",
+								"refresh-token"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"juanito\",\n  \"email\": \"juanito@email.com\",\n  \"password\": \"password123\",\n  \"repeatPassword\": \"password123\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -32,8 +111,7 @@
 								"users"
 							]
 						}
-					},
-					"response": []
+					}
 				},
 				{
 					"name": "Login",
@@ -42,7 +120,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"email\": {{email}},\n  \"password\": {{password}}\n}\n",
+							"raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -59,11 +137,36 @@
 								"login"
 							]
 						}
-					},
-					"response": []
+					}
 				},
 				{
-					"name": "Profile",
+					"name": "Verify Code",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{email}}\",\n  \"verificationCode\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apibase}}/users/verify",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"users",
+								"verify"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Profile",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -83,87 +186,10 @@
 								"profile"
 							]
 						}
-					},
-					"response": []
+					}
 				},
 				{
-					"name": "Admin dashboard",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{apibase}}users/admin",
-							"host": [
-								"{{apibase}}users"
-							],
-							"path": [
-								"admin"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get all users",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{apibase}}/users",
-							"host": [
-								"{{apibase}}"
-							],
-							"path": [
-								"users"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get user by ID",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{apibase}}/users/:id",
-							"host": [
-								"{{apibase}}"
-							],
-							"path": [
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "{{userId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update user",
+					"name": "Update Profile",
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -175,7 +201,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"username\": {{new_username}},\n  \"email\": {{new_email}},\n  \"password\": {{new_password}}\n}",
+							"raw": "{\n  \"username\": \"nuevoNombre\",\n  \"email\": \"nuevo@email.com\",\n  \"password\": \"nuevaPassword123\",\n  \"currentPassword\": \"password123\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -183,28 +209,21 @@
 							}
 						},
 						"url": {
-							"raw": "{{apibase}}/users/:id",
+							"raw": "{{apibase}}/users/profile",
 							"host": [
 								"{{apibase}}"
 							],
 							"path": [
 								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "{{userId}}"
-								}
+								"profile"
 							]
 						}
-					},
-					"response": []
+					}
 				},
 				{
-					"name": "Delete user",
+					"name": "Request Email Change",
 					"request": {
-						"method": "DELETE",
+						"method": "POST",
 						"header": [
 							{
 								"key": "Authorization",
@@ -212,24 +231,90 @@
 								"type": "text"
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"newEmail\": \"nuevo@email.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{apibase}}/users/:id",
+							"raw": "{{apibase}}/users/request-email-change",
 							"host": [
 								"{{apibase}}"
 							],
 							"path": [
 								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "{{userId}}"
-								}
+								"request-email-change"
 							]
 						}
-					},
-					"response": []
+					}
+				},
+				{
+					"name": "Confirm Email Change",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apibase}}/users/confirm-email-change",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"users",
+								"confirm-email-change"
+							]
+						}
+					}
+				},
+				{
+					"name": "Verify Email Change",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"oldEmail\": \"actual@email.com\",\n  \"newEmail\": \"nuevo@email.com\",\n  \"verificationCode\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apibase}}/users/verify-email-change",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"users",
+								"verify-email-change"
+							]
+						}
+					}
 				}
 			]
 		},
@@ -237,54 +322,19 @@
 			"name": "Pets",
 			"item": [
 				{
-					"name": "Get all pets",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{apibase}}/pets",
-							"host": [
-								"{{apibase}}"
-							],
-							"path": [
-								"pets"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get pet by Id",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{apibase}}/pets/:id",
-							"host": [
-								"{{apibase}}"
-							],
-							"path": [
-								"pets",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "{{petid}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create pet",
+					"name": "Create Pet",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": {{petname}}, \n    \"species\": {{petspecie}}, \n    \"breed\": {{breed}}, \n    \"birthDate\": {{petbirthday}}, \n    \"description\": {{petdescription}}, \n    \"image\": {{petimage}}, \n    \"owner\": {{userId}}\n}",
+							"raw": "{\n  \"name\": \"Luna\",\n  \"species\": \"dog\",\n  \"breed\": \"labrador\",\n  \"birthDate\": \"2020-01-01\",\n  \"description\": \"Friendly and playful\",\n  \"city\": \"Madrid\",\n  \"image\": \"https://example.com/luna.jpg\",\n  \"status\": \"available\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -300,17 +350,67 @@
 								"pets"
 							]
 						}
-					},
-					"response": []
+					}
 				},
 				{
-					"name": "Update pet",
+					"name": "Get All Pets",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{apibase}}/pets",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"pets"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Pet by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{apibase}}/pets/:id",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"pets",
+								":id"
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Pet",
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": {{petname}}, \n    \"species\": {{petspecie}}, \n    \"breed\": {{breed}}, \n    \"birthDate\": {{petbirthday}}, \n    \"description\": {{petdescription}}, \n    \"image\": {{petimage}}, \n    \"owner\": {{userId}}\n}",
+							"raw": "{\n  \"name\": \"Luna\",\n  \"species\": \"dog\",\n  \"breed\": \"labrador\",\n  \"birthDate\": \"2020-01-01\",\n  \"description\": \"Friendly and playful\",\n  \"city\": \"Madrid\",\n  \"image\": \"https://example.com/luna.jpg\",\n  \"status\": \"available\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -325,22 +425,21 @@
 							"path": [
 								"pets",
 								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "{{petid}}"
-								}
 							]
 						}
-					},
-					"response": []
+					}
 				},
 				{
-					"name": "Delete pet",
+					"name": "Delete Pet",
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{apibase}}/pets/:id",
 							"host": [
@@ -349,145 +448,116 @@
 							"path": [
 								"pets",
 								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "{{petid}}"
-								}
 							]
 						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "LostFoundReports",
-			"item": [
-				{
-					"name": "Get Reports",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{apibase}}/lost-found",
-							"host": [
-								"{{apibase}}"
-							],
-							"path": [
-								"lost-found"
-							]
-						}
-					},
-					"response": []
+					}
 				},
 				{
-					"name": "Create Report",
+					"name": "Get Adoptable Pets",
 					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"petId\": {{petid}}, \n    \"reportType\": {{reporttype}}, \n    \"description\": {{reportdescription}}, \n    \"location\": {{reportlocation}}, \n    \"reporter\": {{userId}}\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
 							}
-						},
+						],
 						"url": {
-							"raw": "{{apibase}}/lost-found",
+							"raw": "{{apibase}}/pets/adoptable",
 							"host": [
 								"{{apibase}}"
 							],
 							"path": [
-								"lost-found"
+								"pets",
+								"adoptable"
 							]
 						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Forum",
-			"item": [
-				{
-					"name": "Get all posts",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{apibase}}/forum",
-							"host": [
-								"{{apibase}}"
-							],
-							"path": [
-								"forum"
-							]
-						}
-					},
-					"response": []
+					}
 				},
 				{
-					"name": "Get post by Id",
+					"name": "Get Lost Pets",
 					"request": {
 						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{apibase}}/forum/:id",
-							"host": [
-								"{{apibase}}"
-							],
-							"path": [
-								"forum",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "{{postid}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create post",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"title\": {{posttitle}}, \n    \"content\": {{postcontent}}, \n    \"author\": {{userId}}\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
 							}
-						},
+						],
 						"url": {
-							"raw": "{{apibase}}/forum",
+							"raw": "{{apibase}}/pets/lost",
 							"host": [
 								"{{apibase}}"
 							],
 							"path": [
-								"forum"
+								"pets",
+								"lost"
 							]
 						}
-					},
-					"response": []
+					}
 				},
 				{
-					"name": "Update post",
+					"name": "Get Found Pets",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{apibase}}/pets/found",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"pets",
+								"found"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get My Pets",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{apibase}}/pets/mine",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"pets",
+								"mine"
+							]
+						}
+					}
+				},
+				{
+					"name": "Mark Pet as Found",
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": {{posttitle}}, \n    \"content\": {{postcontent}}, \n    \"author\": {{userId}}\n}",
+							"raw": "{\n  \"foundAt\": \"2024-06-01T12:00:00Z\",\n  \"foundLocationLat\": 40.4168,\n  \"foundLocationLng\": -3.7038\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -495,49 +565,164 @@
 							}
 						},
 						"url": {
-							"raw": "{{apibase}}/forum/:id",
+							"raw": "{{apibase}}/pets/:id/found",
 							"host": [
 								"{{apibase}}"
 							],
 							"path": [
-								"forum",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "{{postid}}"
-								}
+								"pets",
+								":id",
+								"found"
 							]
 						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete post",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{apibase}}/forum/:id",
-							"host": [
-								"{{apibase}}"
-							],
-							"path": [
-								"forum",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "{{postid}}"
-								}
-							]
-						}
-					},
-					"response": []
+					}
 				}
 			]
+		},
+		{
+			"name": "Comments",
+			"item": [
+				{
+					"name": "Get Comments by Pet",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{apibase}}/comments/:petId",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"comments",
+								":petId"
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Comment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"¡Qué mascota tan adorable!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apibase}}/comments/:petId",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"comments",
+								":petId"
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Comment",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"Comentario actualizado\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apibase}}/comments/:petId/:commentId",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"comments",
+								":petId",
+								":commentId"
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Comment",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{apibase}}/comments/:petId/:commentId",
+							"host": [
+								"{{apibase}}"
+							],
+							"path": [
+								"comments",
+								":petId",
+								":commentId"
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "apibase",
+			"value": "https://petfinder-backend-nse4.onrender.com/api/v1"
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "email",
+			"value": ""
+		},
+		{
+			"key": "password",
+			"value": ""
 		}
 	]
 }
