@@ -69,29 +69,29 @@ const petSchema = new mongoose.Schema({
     timestamps: true // Añade automáticamente createdAt y updatedAt
 });
 
-petSchema.methods.calculateAge = function() {
-    const today = new Date();
-    const birthDate = new Date(this.birthDate);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-    }
-    return age;
-};
+// petSchema.methods.calculateAge = function() {
+//     const today = new Date();
+//     const birthDate = new Date(this.birthDate);
+//     let age = today.getFullYear() - birthDate.getFullYear();
+//     const m = today.getMonth() - birthDate.getMonth();
+//     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+//         age--;
+//     }
+//     return age;
+// };
 
-petSchema.methods.checkReservationExpiration = function() {
-    if (this.status === 'reserved' && this.reservedAt) {
-        const reservationTime = new Date(this.reservedAt);
-        const currentTime = new Date();
-        const diffInHours = (currentTime - reservationTime) / (1000 * 60 * 60); // Diferencia en horas
-        if (diffInHours >= 24) {
-            this.status = 'available';
-            this.reservedAt = null;
-            this.save(); // Guardar el cambio de estado
-        }
-    }
-};
+// petSchema.methods.checkReservationExpiration = function() {
+//     if (this.status === 'reserved' && this.reservedAt) {
+//         const reservationTime = new Date(this.reservedAt);
+//         const currentTime = new Date();
+//         const diffInHours = (currentTime - reservationTime) / (1000 * 60 * 60); // Diferencia en horas
+//         if (diffInHours >= 24) {
+//             this.status = 'available';
+//             this.reservedAt = null;
+//             this.save(); // Guardar el cambio de estado
+//         }
+//     }
+// };
 
 const Pet = mongoose.model('Pet', petSchema);
 
