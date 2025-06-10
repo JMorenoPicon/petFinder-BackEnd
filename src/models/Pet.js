@@ -23,10 +23,10 @@ const petSchema = new mongoose.Schema({
     },
     city: {
         type: String,
-        required: true // ponlo en true si quieres que sea obligatorio
+        required: true
     },
     image: {
-        type: String, // URL de la imagen
+        type: String,
         required: true
     },
     status: {
@@ -49,49 +49,49 @@ const petSchema = new mongoose.Schema({
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', // Referencia a la colección de Usuarios
+        ref: 'User',
         required: true
     },
-    lastSeen: { // solo para status="lost"
+    lastSeen: {
         type: String
     },
     reservedAt: {
-        type: Date, // Fecha en que se reservó
+        type: Date,
         default: null
     },
     locationLat: {
-        type: Number, // Latitud de la ubicación
+        type: Number,
     },
     locationLng: {
-        type: Number, // Longitud de la ubicación
+        type: Number,
     }
 }, {
-    timestamps: true // Añade automáticamente createdAt y updatedAt
+    timestamps: true
 });
 
-petSchema.methods.calculateAge = function() {
-    const today = new Date();
-    const birthDate = new Date(this.birthDate);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-    }
-    return age;
-};
+// petSchema.methods.calculateAge = function() {
+//     const today = new Date();
+//     const birthDate = new Date(this.birthDate);
+//     let age = today.getFullYear() - birthDate.getFullYear();
+//     const m = today.getMonth() - birthDate.getMonth();
+//     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+//         age--;
+//     }
+//     return age;
+// };
 
-petSchema.methods.checkReservationExpiration = function() {
-    if (this.status === 'reserved' && this.reservedAt) {
-        const reservationTime = new Date(this.reservedAt);
-        const currentTime = new Date();
-        const diffInHours = (currentTime - reservationTime) / (1000 * 60 * 60); // Diferencia en horas
-        if (diffInHours >= 24) {
-            this.status = 'available';
-            this.reservedAt = null;
-            this.save(); // Guardar el cambio de estado
-        }
-    }
-};
+// petSchema.methods.checkReservationExpiration = function() {
+//     if (this.status === 'reserved' && this.reservedAt) {
+//         const reservationTime = new Date(this.reservedAt);
+//         const currentTime = new Date();
+//         const diffInHours = (currentTime - reservationTime) / (1000 * 60 * 60); // Diferencia en horas
+//         if (diffInHours >= 24) {
+//             this.status = 'available';
+//             this.reservedAt = null;
+//             this.save(); // Guardar el cambio de estado
+//         }
+//     }
+// };
 
 const Pet = mongoose.model('Pet', petSchema);
 
