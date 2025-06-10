@@ -23,10 +23,10 @@ const petSchema = new mongoose.Schema({
     },
     city: {
         type: String,
-        required: true // ponlo en true si quieres que sea obligatorio
+        required: true
     },
     image: {
-        type: String, // URL de la imagen
+        type: String,
         required: true
     },
     status: {
@@ -49,24 +49,24 @@ const petSchema = new mongoose.Schema({
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', // Referencia a la colección de Usuarios
+        ref: 'User',
         required: true
     },
-    lastSeen: { // solo para status="lost"
+    lastSeen: {
         type: String
     },
     reservedAt: {
-        type: Date, // Fecha en que se reservó
+        type: Date,
         default: null
     },
     locationLat: {
-        type: Number, // Latitud de la ubicación
+        type: Number,
     },
     locationLng: {
-        type: Number, // Longitud de la ubicación
+        type: Number,
     }
 }, {
-    timestamps: true // Añade automáticamente createdAt y updatedAt
+    timestamps: true
 });
 
 // petSchema.methods.calculateAge = function() {

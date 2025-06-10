@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema({
         default: null
     },
 }, {
-    timestamps: true // Añade automáticamente createdAt y updatedAt
+    timestamps: true
 });
 
 userSchema.methods.comparePassword = async function (password) {
