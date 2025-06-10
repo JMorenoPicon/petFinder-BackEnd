@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "jest --coverage",
+    "test:integration": "jest test/integration",
     "sonar": "sonar-scanner",
     "docker:build": "docker build -t petfinder-backend .",
     "docker:up": "docker-compose up -d",
