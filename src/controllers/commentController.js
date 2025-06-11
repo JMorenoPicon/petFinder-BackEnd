@@ -1,5 +1,16 @@
 import Comment from '../models/Comment.js';
 
+export const getComments = async (req, res) => {
+    try {
+        const comments = await Comment.find()
+            .populate('author', 'username')
+            .sort({ createdAt: -1 });
+        res.status(200).json(comments);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener comentarios', error });
+    }
+};
+
 export const getCommentsByPet = async (req, res) => {
     try {
         const comments = await Comment.find({ pet: req.params.petId })

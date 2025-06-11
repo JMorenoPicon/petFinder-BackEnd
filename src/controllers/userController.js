@@ -1,4 +1,6 @@
 import User from '../models/User.js';
+import Pet from '../models/Pet.js';
+import Comment from '../models/Comment.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import config from '../config.js';
@@ -97,26 +99,26 @@ export const loginUser = async (req, res) => {
     }
 };
 
-// TODO Obtener todos los usuarios (solo admin)
-// export const getUsers = async (req, res) => {
-//     try {
-//         const users = await User.find();
-//         res.status(200).json(users);
-//     } catch (error) {
-//         res.status(500).json({ message: 'Error al obtener los usuarios', error });
-//     }
-// };
+// Obtener todos los usuarios (solo admin)
+export const getUsers = async (req, res) => {
+    try {
+        const users = await User.find().select('-password -__v');
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener los usuarios', error });
+    }
+};
 
-// TODO Obtener un usuario por ID (solo admin)
-// export const getUserById = async (req, res) => {
-//     try {
-//         const user = await User.findById(req.params.id);
-//         if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
-//         res.status(200).json(user);
-//     } catch (error) {
-//         res.status(500).json({ message: 'Error al obtener el usuario', error });
-//     }
-// };
+// Obtener un usuario por ID (solo admin)
+export const getUserById = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener el usuario', error });
+    }
+};
 
 //Obtener el perfil del usuario logueado (solo accesible por el propio usuario)
 export const getProfile = async (req, res) => {
@@ -131,16 +133,6 @@ export const getProfile = async (req, res) => {
         res.status(500).json({ message: 'Error al obtener el perfil del usuario', error });
     }
 };
-
-// TODO Obtener el panel de administrador (solo accesible por el admin)
-// export const getAdminPanel = async (req, res) => {
-//     try {
-//         //Acceder a las funcionalidades del panel de admin
-//         res.status(200).json({ message: 'Panel de administrador' });
-//     } catch (error) {
-//         res.status(500).json({ message: 'Error al obtener el panel de administrador', error });
-//     }
-// };
 
 // Actualizar un usuario (solo el propio usuario o admin)
 export const updateUser = async (req, res) => {
@@ -178,16 +170,30 @@ export const updateUser = async (req, res) => {
     }
 };
 
-// TODO Eliminar un usuario (solo admin)
-// export const deleteUser = async (req, res) => {
-//     try {
-//         const deletedUser = await User.findByIdAndDelete(req.params.id);
-//         if (!deletedUser) return res.status(404).json({ message: 'Usuario no encontrado' });
-//         res.status(200).json({ message: 'Usuario eliminado exitosamente' });
-//     } catch (error) {
-//         res.status(500).json({ message: 'Error al eliminar el usuario', error });
-//     }
-// };
+// Eliminar un usuario (solo admin)
+export const deleteUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+
+        if (user.role === 'admin') {
+            return res.status(403).json({ message: 'No se puede eliminar un usuario administrador.' });
+        }
+
+        // Eliminar mascotas del usuario
+        await Pet.deleteMany({ owner: user._id });
+
+        // Eliminar comentarios del usuario
+        await Comment.deleteMany({ author: user._id });
+
+        // Eliminar usuario
+        await user.deleteOne();
+
+        res.status(200).json({ message: 'Usuario y datos asociados eliminados exitosamente' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al eliminar el usuario', error });
+    }
+};
 
 // Solicitar cambio de email
 export const requestEmailChange = async (req, res) => {
