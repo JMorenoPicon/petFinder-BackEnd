@@ -1,7 +1,7 @@
 import express from 'express';
 import { createPet, getPets, getPetById, updatePet, deletePet, getAdoptablePets, getLostPets, getMyPets, markPetAsFound, getFoundPets } from '../../controllers/petController.js';
 import { authMiddleware } from '../../middlewares/auth/authMiddleware.js';  // Middleware de autenticación
-import { ownerUser } from '../../middlewares/auth/roleMiddleware.js';  // Middleware de roles
+import { ownerUser, adminRole } from '../../middlewares/auth/roleMiddleware.js';  // Middleware de roles
 
 
 const router = express.Router();
@@ -41,7 +41,15 @@ const router = express.Router();
  *         foundLocationLng:
  *           type: number
  *         owner:
- *           type: string
+ *           oneOf:
+ *             - type: string
+ *               description: ID del usuario propietario
+ *             - type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                 email:
+ *                   type: string
  *         lastSeen:
  *           type: string
  *         reservedAt:
@@ -394,7 +402,7 @@ router.get('/:id', authMiddleware, getPetById);
  * @swagger
  * /pets:
  *   get:
- *     summary: Obtener todas las mascotas
+ *     summary: Obtener todas las mascotas (solo admin)
  *     tags: [Pets]
  *     security:
  *       - bearerAuth: []
@@ -409,10 +417,33 @@ router.get('/:id', authMiddleware, getPetById);
  *                 $ref: '#/components/schemas/Pet'
  *       401:
  *         description: No autorizado, token inválido o ausente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       403:
+ *         description: Acceso denegado, solo admin
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  *       500:
  *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  */
-router.get('/', authMiddleware, getPets);
+router.get('/', authMiddleware, adminRole, getPets);
 /**
  * @swagger
  * /pets/{id}:
