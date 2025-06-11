@@ -1,7 +1,7 @@
 import express from 'express';
-import { createUser, loginUser, updateUser, getProfile, verifyCode, requestEmailChange, confirmEmailChange, verifyEmailChange } from '../../controllers/userController.js';
+import { createUser, loginUser, updateUser, getProfile, getUsers, getUserById, deleteUser, verifyCode, requestEmailChange, confirmEmailChange, verifyEmailChange } from '../../controllers/userController.js';
 import { authMiddleware } from '../../middlewares/auth/authMiddleware.js';  // Middleware de autenticación
-import { userRole } from '../../middlewares/auth/roleMiddleware.js';  // Middleware de roles
+import { userRole, adminRole } from '../../middlewares/auth/roleMiddleware.js';  // Middleware de roles
 
 
 const router = express.Router();
@@ -371,11 +371,179 @@ router.post('/confirm-email-change', authMiddleware, confirmEmailChange);
 router.post('/verify-email-change', authMiddleware, verifyEmailChange);
 
 //Rutas para panel de administrador
-//TODO router.get('/admin', authMiddleware, adminRole, getAdminPanel);
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     summary: Obtener todos los usuarios (solo admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de usuarios
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 users:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/User'
+ *       401:
+ *         description: No autorizado, token inválido o ausente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       403:
+ *         description: Acceso denegado, solo admin
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ */
+router.get('/', authMiddleware, adminRole, getUsers);
 
-//TODO Rutas protegidas (requieren autenticacion)
-//TODO router.get('/', authMiddleware, adminRole, getUsers);
-//TODO router.get('/:id', authMiddleware, adminRole, getUserById);
-//TODO router.delete('/:id', authMiddleware, userRole, deleteUser);
+/**
+ * @swagger
+ * /users/{id}:
+ *   get:
+ *     summary: Obtener un usuario por ID (solo admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del usuario
+ *     responses:
+ *       200:
+ *         description: Usuario encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       401:
+ *         description: No autorizado, token inválido o ausente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       403:
+ *         description: Acceso denegado, solo admin
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       404:
+ *         description: Usuario no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ */
+router.get('/:id', authMiddleware, adminRole, getUserById);
+
+/**
+ * @swagger
+ * /users/{id}:
+ *   delete:
+ *     summary: Eliminar un usuario por ID (solo admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del usuario
+ *     responses:
+ *       200:
+ *         description: Usuario y datos asociados eliminados exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       401:
+ *         description: No autorizado, token inválido o ausente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       403:
+ *         description: No se puede eliminar un usuario administrador
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       404:
+ *         description: Usuario no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ */
+router.delete('/:id', authMiddleware, adminRole, deleteUser);
 
 export default router;

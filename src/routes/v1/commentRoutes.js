@@ -1,6 +1,7 @@
 import express from 'express';
-import { getCommentsByPet, createComment, updateComment, deleteComment } from '../../controllers/commentController.js';
+import { getComments, getCommentsByPet, createComment, updateComment, deleteComment } from '../../controllers/commentController.js';
 import { authMiddleware } from '../../middlewares/auth/authMiddleware.js';
+import { adminRole } from '../../middlewares/auth/roleMiddleware.js';
 
 const router = express.Router({ mergeParams: true });
 
@@ -14,8 +15,13 @@ const router = express.Router({ mergeParams: true });
  *         _id:
  *           type: string
  *         pet:
- *           type: string
- *           description: ID de la mascota asociada
+ *           oneOf:
+ *             - type: string
+ *               description: ID de la mascota asociada
+ *             - type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
  *         content:
  *           type: string
  *         author:
@@ -305,5 +311,51 @@ router.put('/:petId/:commentId', authMiddleware, updateComment);
  *                   type: string
  */
 router.delete('/:petId/:commentId', authMiddleware, deleteComment);
+/**
+ * @swagger
+ * /comments:
+ *   get:
+ *     summary: Obtener todos los comentarios (solo admin)
+ *     tags: [Comments]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de todos los comentarios
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Comment'
+ *       401:
+ *         description: No autorizado, token inválido o ausente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       403:
+ *         description: Acceso denegado, solo admin
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ */
+router.get('/', authMiddleware, adminRole, getComments);
 
 export default router;

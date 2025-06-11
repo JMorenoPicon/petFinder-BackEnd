@@ -315,7 +315,49 @@
 							]
 						}
 					}
-				}
+				},
+                {
+                    "name": "Get All Users (admin)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+                        ],
+                        "url": {
+                            "raw": "{{apibase}}/users",
+                            "host": [ "{{apibase}}" ],
+                            "path": [ "users" ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get User by ID (admin)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+                        ],
+                        "url": {
+                            "raw": "{{apibase}}/users/{{userId}}",
+                            "host": [ "{{apibase}}" ],
+                            "path": [ "users", "{{userId}}" ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete User (admin)",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+                        ],
+                        "url": {
+                            "raw": "{{apibase}}/users/{{userId}}",
+                            "host": [ "{{apibase}}" ],
+                            "path": [ "users", "{{userId}}" ]
+                        }
+                    }
+                }
 			]
 		},
 		{
@@ -576,7 +618,21 @@
 							]
 						}
 					}
-				}
+				},
+                {
+                    "name": "Get All Pets (admin)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+                        ],
+                        "url": {
+                            "raw": "{{apibase}}/pets",
+                            "host": [ "{{apibase}}" ],
+                            "path": [ "pets" ]
+                        }
+                    }
+                }
 			]
 		},
 		{
@@ -703,7 +759,21 @@
 							]
 						}
 					}
-				}
+				},
+                {
+                    "name": "Get All Comments (admin)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+                        ],
+                        "url": {
+                            "raw": "{{apibase}}/comments",
+                            "host": [ "{{apibase}}" ],
+                            "path": [ "comments" ]
+                        }
+                    }
+                }
 			]
 		}
 	],
